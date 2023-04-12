@@ -1,7 +1,8 @@
 mod_heatwaves <- function(input, output, session) {
-  my_leafdown <- leafdown::Leafdown$new(spdfs_list, "leafdown", input)
-
-  rv <- reactiveValues(0)
+  # Leafdown DEMO
+  my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input, join_map_levels_by = c("code_state" = "code_state"))
+  rv <- reactiveValues()
+  rv$update_leafdown <- 0
 
   observeEvent(input$drill_down, {
     my_leafdown$drill_down()
@@ -13,105 +14,56 @@ mod_heatwaves <- function(input, output, session) {
     rv$update_leafdown <- rv$update_leafdown + 1
   })
 
-  output$leafdown <- renderLeaflet({
-    update_leafdown()
-    #meta_data <- my_leafdown$curr_data
-    #curr_map_level <- my_leafdown$curr_map_level
-    #if (curr_map_level ==1){
-    #  data <- meta_data %>%
-    #    left_join()
-    leaflet(data = spdfs_list) %>%
+  output$maptest <- renderLeaflet({
+    req(rv$update_leafdown)
+    meta_data <- my_leafdown$curr_data
+    curr_map_level <- my_leafdown$curr_map_level
+    if (curr_map_level == 1) {
+      data <- meta_data %>%
+        left_join(df_uf, by = c("code_state" = "cod_uf"))
+    } else {
+      data <- meta_data %>%
+        left_join(df_muni, by = c("code_muni" = "code_muni"))
+    }
+
+    print(head(data))
+    print(paste0("map level = ", curr_map_level))
+
+    my_leafdown$add_data(data)
+    labels <- create_labels(data, curr_map_level)
+    my_leafdown$draw_leafdown(
+      fillColor = ~ colorNumeric("YlOrRd", Heatwaves)(Heatwaves),
+      weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
+      highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
+    ) %>%
+      my_leafdown$keep_zoom(input) %>%
+      addLegend("topright",
+                pal = colorNumeric("YlOrRd", data$Heatwaves),
+                values = data$Heatwaves,
+                title = "Ondas de Calor",
+                opacity = 1)
+  })
+
+
+  # Leafdown Map
+  output$mapbr <- renderLeaflet({
+    leaflet(data_muni) %>%
       addTiles() %>%
       addProviderTiles(providers$Stamen.Toner) %>%
       addLegend(
         pal = colorNumeric("YlOrRd", data$Heatwaves, na.color = NA),
         values = data$Heatwaves,
-        title = "Espectativa de Vida",
+        title = "Ondas de Calor nos Últimos 20 anos",
         labFormat = labelFormat(suffix = "anos"),
         opacity = 1,
         layerId = "legend") %>%
-      addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+      addPolygons(stroke = F, color = "#444444", weight = 1, smoothFactor = 0.5,
                   opacity = 1.0, fillOpacity = 0.5,
-                  label = ~ paste0("Espectativa de vida em ", name_state, ": ", Heatwaves),
+                  label = ~ paste0("Ondas de Calor em ", name_muni, ": ", Heatwaves),
                   fillColor = ~colorQuantile("YlOrRd", Heatwaves)(Heatwaves),
                   highlightOptions = highlightOptions(color = "white", weight = 2,
                                                       bringToFront = TRUE))
-    })
-}
-
-data <- reactive({
-  req(rv$update_leafdown)
-  data <- my_leafdown$curr_data
-
-  if (my_leafdown$curr_map_level == 2) {
-    data$ST <- substr(data$HASC_2, 4, 5)
-    us_health_counties_year <- subset(us_health_counties, year == input$year)
-    # there are counties with the same name in different states so we have to join on both
-    data <- overwrite_join(data, us_health_counties_year, by = c("NAME_2", "ST"))
-  } else {
-    data$ST <- substr(data$HASC_1, 4, 5)
-    us_health_states_year <- subset(us_health_states, year == input$year)
-    data <- overwrite_join(data, us_health_states_year, by = "ST")
-  }
-
-  my_leafdown$add_data(data)
-  data
-})
-
-
-output$leafdown <- renderLeaflet({
-  req(spdfs_list)
-  req(data)
-
-  data <- data()
-  data$y <- data[, input$prim_var]
-  fillcolor <- leaflet::colorNumeric("Blues", data$y)
-  legend_title <- input$prim_var
-
-  labels <- create_labels(data, my_leafdown$curr_map_level, input$prim_var, input$sec_var)
-  my_leafdown$draw_leafdown(
-    fillColor = ~ fillcolor(data$y),
-    weight = 3,
-    fillOpacity = 1,
-    color = "white",
-    label = labels
-  ) %>%
-    # set the view to be center on the US
-    setView(-95, 39, 4) %>%
-    addLegend(
-      pal = fillcolor,
-      values = ~ data$y,
-      title = legend_title,
-      opacity = 1
-    )
-})
-
-output$line <- renderEcharts4r({
-  create_line_graph(us_health_all, my_leafdown$curr_sel_data(), input$prim_var, input$sec_var)
-})
-
-output$scatter <- renderEcharts4r({
-  create_scatter_plot(my_leafdown$curr_sel_data(), input$prim_var, input$sec_var)
-})
-
-output$bar <- renderEcharts4r({
-  create_bar_chart(my_leafdown$curr_sel_data(), input$prim_var)
-})
-
-
-output$mytable <- DT::renderDataTable({
-  all_data <- data()
-  sel_data <- my_leafdown$curr_sel_data()
-  map_level <- my_leafdown$curr_map_level
-  create_mytable(all_data, sel_data, map_level, input$prim_var)
-})
-
-# (Un)select shapes in map when click on table
-observeEvent(input$mytable_row_last_clicked, {
-  sel_row <- input$mytable_row_last_clicked
-  sel_shape_id <- my_leafdown$curr_poly_ids[sel_row]
-  my_leafdown$toggle_shape_select(sel_shape_id)
-})
+  })
 }
 
 

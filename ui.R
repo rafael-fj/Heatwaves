@@ -13,7 +13,10 @@ ui <- dashboardPage(
                 column(
                   width = 6,
                   box(width = 14, height = 645,
-                    leafletOutput("mapbr", height = 620),
+                    useShinyjs(),
+                    actionButton("drill_down", "Municípios"),
+                    actionButton("drill_up", "Estados"),
+                    leafletOutput("map", height = 620),
                     p())),
                 column(
                   width = 6,

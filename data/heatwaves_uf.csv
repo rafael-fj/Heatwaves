@@ -1,28 +1,28 @@
-"cod_uf","Estado","media"
-"11","Rondônia",137
-"12","Acre",144
-"13","Amazonas",89
-"14","Roraima",118
-"15","Pará",97
-"16","Amapá",88
-"17","Tocantins",102
-"21","Maranhão",106
-"22","Piauí",109
-"23","Ceará",107
-"24","Rio Grande do Norte",111
-"25","Paraíba",117
-"26","Pernambuco",110
-"27","Alagoas",93
-"28","Sergipe",82
-"29","Bahia",97
-"31","Minas Gerais",95
-"32","Espírito Santo",71
-"33","Rio de Janeiro",64
-"35","São Paulo",90
-"41","Paraná",101
-"42","Santa Catarina",66
-"43","Rio Grande do Sul",69
-"50","Mato Grosso do Sul",117
-"51","Mato Grosso",129
-"52","Goiás",121
-"53","Distrito Federal",114
+cod_uf,Estado,Heatwaves
+11,Rondônia,137
+12,Acre,144
+13,Amazonas,89
+14,Roraima,118
+15,Pará,97
+16,Amapá,88
+17,Tocantins,102
+21,Maranhão,106
+22,Piauí,109
+23,Ceará,107
+24,Rio Grande do Norte,111
+25,Paraíba,117
+26,Pernambuco,110
+27,Alagoas,93
+28,Sergipe,82
+29,Bahia,97
+31,Minas Gerais,95
+32,Espírito Santo,71
+33,Rio de Janeiro,64
+35,São Paulo,90
+41,Paraná,101
+42,Santa Catarina,66
+43,Rio Grande do Sul,69
+50,Mato Grosso do Sul,117
+51,Mato Grosso,129
+52,Goiás,121
+53,Distrito Federal,114
