@@ -9,11 +9,11 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = "dashboard",
+              useShinyjs(),
               fluidRow(
                 column(
                   width = 6,
                   box(width = 14, height = 645,
-                    useShinyjs(),
                     actionButton("drill_down", "Municípios"),
                     actionButton("drill_up", "Estados"),
                     leafletOutput("map", height = 620),

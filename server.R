@@ -1,12 +1,20 @@
 function(input, output, session) {
 
   # Leafdown DEMO
-  # create leafdown object
-  my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)
+  my_leafdown <- Leafdown$new(spdfs_list, "map", input)
   rv <- reactiveValues()
   rv$update_leafdown <- 0
+  rv$clicked_polygon <- NULL
 
-  # observers for the drilling buttons
+  observeEvent(input$map_shape_click, {
+    print("Polygon clicked")
+    print(paste0("Clicked polygon ID: ", input$map_shape_click$id))
+
+    if (my_leafdown$curr_map_level == 1) {
+      rv$clicked_polygon <- input$map_shape_click$id
+    }
+  })
+
   observeEvent(input$drill_down, {
     my_leafdown$drill_down()
     rv$update_leafdown <- rv$update_leafdown + 1
@@ -17,9 +25,8 @@ function(input, output, session) {
     rv$update_leafdown <- rv$update_leafdown + 1
   })
 
-  data <- reactive ({
+  output$map <- renderLeaflet({
     req(rv$update_leafdown)
-    # fetch the current metadata from the leafdown object
     meta_data <- my_leafdown$curr_data
     curr_map_level <- my_leafdown$curr_map_level
     if (curr_map_level == 1) {
@@ -34,22 +41,9 @@ function(input, output, session) {
     print(paste0("map level = ", curr_map_level))
 
     my_leafdown$add_data(data)
-    data
-  })
-
-  output$map <- renderLeaflet({
-    req(spdfs_list)
-    req(data)
-
-    data <- data()
-
-
-
-    labels <- create_labels(data, my_leafdown$curr_map_level)
-
-    # draw the leafdown object
+    labels <- create_labels(data, curr_map_level)
     my_leafdown$draw_leafdown(
-      fillColor = ~ colorQuantile("YlOrRd", Heatwaves)(Heatwaves),
+      fillColor = ~ colorNumeric("YlOrRd", Heatwaves)(Heatwaves),
       weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
       highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
     ) %>%
