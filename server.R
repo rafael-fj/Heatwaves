@@ -1,10 +1,12 @@
 function(input, output, session) {
 
   # Leafdown DEMO
-  my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input, join_map_levels_by = c("code_state" = "code_state"))
+  # create leafdown object
+  my_leafdown <- Leafdown$new(spdfs_list, "leafdown", input)
   rv <- reactiveValues()
   rv$update_leafdown <- 0
 
+  # observers for the drilling buttons
   observeEvent(input$drill_down, {
     my_leafdown$drill_down()
     rv$update_leafdown <- rv$update_leafdown + 1
@@ -15,26 +17,39 @@ function(input, output, session) {
     rv$update_leafdown <- rv$update_leafdown + 1
   })
 
-  output$map <- renderLeaflet({
+  data <- reactive ({
     req(rv$update_leafdown)
+    # fetch the current metadata from the leafdown object
     meta_data <- my_leafdown$curr_data
     curr_map_level <- my_leafdown$curr_map_level
     if (curr_map_level == 1) {
       data <- meta_data %>%
-        left_join(df_uf, by = c("code_state" = "cod_uf"))
+        left_join(df_uf, by = c("NAME_1" = "Estado"))
     } else {
       data <- meta_data %>%
-        left_join(df_muni, by = c("code_muni" = "code_muni"))
+        left_join(df_muni, by = c("CC_2" = "code_muni"))
     }
-    selected <- my_leafdown$curr_sel_data()
+
     print(head(data))
     print(paste0("map level = ", curr_map_level))
-    print(selected)
 
     my_leafdown$add_data(data)
-    labels <- create_labels(data, curr_map_level)
+    data
+  })
+
+  output$map <- renderLeaflet({
+    req(spdfs_list)
+    req(data)
+
+    data <- data()
+
+
+
+    labels <- create_labels(data, my_leafdown$curr_map_level)
+
+    # draw the leafdown object
     my_leafdown$draw_leafdown(
-      fillColor = ~ colorNumeric("YlOrRd", Heatwaves)(Heatwaves),
+      fillColor = ~ colorQuantile("YlOrRd", Heatwaves)(Heatwaves),
       weight = 2, fillOpacity = 0.8, color = "grey", label = labels,
       highlight = highlightOptions(weight = 5, color = "#666", fillOpacity = 0.7)
     ) %>%
