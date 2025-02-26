@@ -1,0 +1,14 @@
+name: heatwave
+title:
+username:
+account: rafaelfj
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 8824271
+bundleId: 9027945
+url: https://rafaelfj.shinyapps.io/heatwave/
+when: 1724699975.61693
+lastSyncTime: 1724699975.61693
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: data_muni_novao.RDS|df.rds|df2.rds|heatwaves/heatwaves.R|heatwaves/test_leafdown.R|shapes/municipios_old.RDS|test.RData|test_input.csv

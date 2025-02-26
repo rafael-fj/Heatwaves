@@ -1,28 +1,28 @@
-cod_uf,Estado,Heatwaves
-11,Rondônia,137
-12,Acre,144
-13,Amazonas,89
-14,Roraima,118
-15,Pará,97
-16,Amapá,88
-17,Tocantins,102
-21,Maranhão,106
-22,Piauí,109
-23,Ceará,107
-24,Rio Grande do Norte,111
-25,Paraíba,117
-26,Pernambuco,110
-27,Alagoas,93
-28,Sergipe,82
-29,Bahia,97
-31,Minas Gerais,95
-32,Espírito Santo,71
-33,Rio de Janeiro,64
-35,São Paulo,90
-41,Paraná,101
-42,Santa Catarina,66
-43,Rio Grande do Sul,69
-50,Mato Grosso do Sul,117
-51,Mato Grosso,129
-52,Goiás,121
-53,Distrito Federal,114
+cod_uf,Estado,Heatwaves,Capital,cod_muni
+11,Rondônia,45,Porto Velho,1100205
+12,Acre,51,Rio Branco,1200401
+13,Amazonas,55,Manaus,1302603
+14,Roraima,61,Boa Vista,1400100
+15,Pará,48,Belém,1501402
+16,Amapá,49,Macapá,1600303
+17,Tocantins,54,Palmas,1721000
+21,Maranhão,57,São Luís,2109601
+22,Piauí,62,Teresina,2211001
+23,Ceará,51,Fortaleza,2304400
+24,Rio Grande do Norte,40,Natal,2408102
+25,Paraíba,44,João Pessoa,2507507
+26,Pernambuco,49,Recife,2611606
+27,Alagoas,57,Maceió,2704302
+28,Sergipe,44,Aracaju,2800308
+29,Bahia,46,Salvador,2927408
+31,Minas Gerais,60,Belo Horizonte,3106200
+32,Espírito Santo,38,Vitória,3205309
+33,Rio de Janeiro,43,Rio de Janeiro,3304557
+35,São Paulo,43,São Paulo,3550308
+41,Paraná,51,Curitiba,4106902
+42,Santa Catarina,51,Florianópolis,4205407
+43,Rio Grande do Sul,46,Porto Alegre,4314902
+50,Mato Grosso do Sul,72,Campo Grande,5002704
+51,Mato Grosso,63,Cuiabá,5103403
+52,Goiás,74,Goiânia,5208707
+53,Distrito Federal,64,Brasília,5300108
